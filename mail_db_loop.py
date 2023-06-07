@@ -12,7 +12,7 @@ from email.mime.text import MIMEText # A class to represent plain text in email 
 
 def recognize_plate(image_path):
     # Set your API key and endpoint URL
-    API_KEY = '2cde24fbebdb106dbb39dce0a6ec5132cb585074'
+    API_KEY = 'API KEY'
     API_URL = 'https://api.platerecognizer.com/v1/plate-reader/'
 
     # Read the image file as binary data
@@ -31,8 +31,6 @@ def recognize_plate(image_path):
         # Extract license plate information if available
         if 'results' in results:
             plate_info = results['results'][0]
-            plate = plate_info['plate']
-            confidence = plate_info['score']
             #return f'License plate: {plate} (confidence {confidence})'
             return plate
 
@@ -47,12 +45,10 @@ def recognize_plate(image_path):
 
 def send_email(to_email, subject, body, attachment):
 
-    from_email = "rahulmuggalla02@gmail.com" # Defining the sender email
-    password = "gxnlvbfnssorjgkt" # Defining the sender password
+    from_email = "EMAIL" # Defining the sender email
+    password = "PASSWORD" # Defining the sender password
 
     msg = MIMEMultipart() # Creating a MIME object
-    msg['From'] = from_email # Adding the sender email to the message
-    msg['To'] = to_email # Adding the recipient email to the message
     msg['Subject'] = subject # Adding the subject of the email to the message
     msg.attach(MIMEText(body, 'plain')) # Adding the body of the email to the message
 
@@ -78,9 +74,6 @@ def send_email(to_email, subject, body, attachment):
         server.starttls()
         # Login to the email account
         server.login(from_email, password)
-
-        # Converting the message to a string
-        text = msg.as_string()
 
         # Sending the email
         server.sendmail(from_email, to_email, text)
