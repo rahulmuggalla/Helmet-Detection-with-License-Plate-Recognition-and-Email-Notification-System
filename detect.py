@@ -4,34 +4,14 @@ from ultralytics import YOLO
 import os
 import numpy as np # for scientific computing with Python
 import pandas as pd # for data analysis
-import requests
-import json
-import smtplib # for sending emails
 from email import encoders # for encoding email attachments
 from email.mime.base import MIMEBase # for the implementation of MIME (Multipurpose Internet Mail Extensions)
-from email.mime.multipart import MIMEMultipart # A class to represent a MIME Multipart message, as used in email
 from email.mime.text import MIMEText # A class to represent plain text in email messages
 
 # Load the pre-trained YOLO model
 model = YOLO('best.pt')
 
 video = 'sample.mp4'
-
-# Read the COCO class list from a file
-with open("coco.txt", "r") as my_file:
-    data = my_file.read()
-class_list = data.split("\n")
-print('Classes Names :', class_list)
-
-# Create a folder for saving cropped images of "Person_Bike" objects
-person_bike_folder = "Person_Bike"
-if not os.path.exists(person_bike_folder):
-    os.makedirs(person_bike_folder)
-
-# Create a folder for saving cropped images of "No_Helmet" objects
-no_helmet_folder = 'No_Helmet'
-if not os.path.exists(no_helmet_folder):
-    os.makedirs(no_helmet_folder)
 
 def save_bike(video_path):
 
@@ -71,10 +51,7 @@ def save_bike(video_path):
         px = pd.DataFrame(a).astype("float")
 
         # Loop through the detected objects
-        for index, row in px.iterrows():
-            x1 = int(row[0])
-            y1 = int(row[1])
-            x2 = int(row[2])
+        for index, row in px.iterrows():]   
             y2 = int(row[3])
             d = int(row[5])
             c = class_list[d]
@@ -110,9 +87,6 @@ def save_no_helmet(image_folder, no_helmet_folder=no_helmet_folder):
         a = results[0].boxes.boxes
         px = pd.DataFrame(a).astype("float")  # Convert predictions to a Pandas DataFrame
         for index, row in px.iterrows():
-            x1 = int(row[0])
-            y1 = int(row[1])
-            x2 = int(row[2])
             y2 = int(row[3])
             d = int(row[5])
             c = class_list[d]  # Get the class label based on the predicted class index
@@ -134,7 +108,7 @@ def save_no_helmet(image_folder, no_helmet_folder=no_helmet_folder):
 
 def recognize_plate(image_path):
     # Set your API key and endpoint URL
-    API_KEY = '2cde24fbebdb106dbb39dce0a6ec5132cb585074'
+    API_KEY = 'API KEY'
     API_URL = 'https://api.platerecognizer.com/v1/plate-reader/'
 
     # Read the image file as binary data
@@ -152,8 +126,6 @@ def recognize_plate(image_path):
 
         # Extract license plate information if available
         if 'results' in results:
-            plate_info = results['results'][0]
-            plate = plate_info['plate']
             confidence = plate_info['score']
             #return f'License plate: {plate} (confidence {confidence})'
             return plate
@@ -171,8 +143,6 @@ def send_email(to_email, subject, body, attachment):
     password = "password" # Defining the sender password
 
     msg = MIMEMultipart() # Creating a MIME object
-    msg['From'] = from_email # Adding the sender email to the message
-    msg['To'] = to_email # Adding the recipient email to the message
     msg['Subject'] = subject # Adding the subject of the email to the message
     msg.attach(MIMEText(body, 'plain')) # Adding the body of the email to the message
 
@@ -180,9 +150,6 @@ def send_email(to_email, subject, body, attachment):
     with open(attachment, "rb") as f:
         # Creating a MIME object for the attachment
         attach = MIMEBase('application', 'octet-stream', Name=attachment)
-
-        # Setting the payload of the attachment
-        attach.set_payload((f).read())
 
     encoders.encode_base64(attach) # Encoding the attachment
 
@@ -198,12 +165,6 @@ def send_email(to_email, subject, body, attachment):
         server.starttls()
         # Login to the email account
         server.login(from_email, password)
-
-        # Converting the message to a string
-        text = msg.as_string()
-
-        # Sending the email
-        server.sendmail(from_email, to_email, text)
         # Quitting the SMTP server
         server.quit()
 
@@ -228,20 +189,6 @@ if __name__ == "__main__":
     # Loop through all images in the folder
     for filename in os.listdir(no_helmet_folder):
         if filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".jpeg"):
-            # Construct the full image path
-            image_path = os.path.join(no_helmet_folder, filename)
-
-            # Recognize the license plate from the image
-            license_plate = recognize_plate(image_path)
-
-            # Check if the recognized license plate has already been identified
-            if license_plate in recognized_plates:
-                # Print a message and skip to the next image
-                print(f"License Plate already identified earlier : {license_plate}")
-                continue
-            else:
-                # Add the recognized license plate to the set
-                recognized_plates.add(license_plate)
 
             # Check if the recognized license plate is in the user data
             if license_plate in user_data['License Plate'].values:
@@ -258,10 +205,3 @@ if __name__ == "__main__":
                 # Compose the email subject and body
                 subject = f'Violation Alert: No Helmet'
                 body = f'Dear {name},\n\nThis is to inform you that a violation has been detected in your vehicle with license plate number {license_plate}. The violation is related to not wearing a helmet while driving.\n\nPlease ensure compliance with traffic rules and regulations in the future.\n\nSincerely,\nTraffic Violation Monitoring System'
-
-                # Send the email with the image attachment
-                send_email(email, subject, body, image_path)
-            else:
-                print(f'No user data found for license plate: {license_plate}')
-        else:
-            print(f'Invalid file format for file: {filename}')
