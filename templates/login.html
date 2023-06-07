@@ -16,19 +16,6 @@
       padding: 20px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      background-color: #f2f2f2;
-    }
-    
-    .login-form h2 {
-      text-align: center;
-    }
-    
-    .login-form input[type="text"],
-    .login-form input[type="password"] {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
@@ -57,16 +44,6 @@
     }
   </style>
 </head>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-        {% for message in messages %}
-      <center><b>{{ message }}</b></center>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-<body>
-  <div class="login-form">
-    <h2>Login</h2>
     <form method="POST">
       <label for="id">User ID:</label>
       <input type="text" id="id" name="id" placeholder="Enter your user ID" required>
@@ -74,12 +51,6 @@
       <label for="password">Password:</label>
       <input type="password" id="password" name="password" placeholder="Enter your password" required>
       
-      <button type="submit">Login</button>
-    </form>
-    
-    <div class="options">
-      <a href="{{url_for('signup')}}">Sign Up</a> | <a href="/forgot-password">Forgot User ID / Password?</a>
-    </div>
   </div>
 </body>
 </html>
