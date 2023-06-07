@@ -14,7 +14,7 @@ def recognize_plate(filename):
 
     image_path= os.path.join(path,'No_Helmet',filename)
     # Set your API key and endpoint URL
-    API_KEY = '2cde24fbebdb106dbb39dce0a6ec5132cb585074'
+    API_KEY = 'API KEY'
     API_URL = 'https://api.platerecognizer.com/v1/plate-reader/'
 
     # Read the image file as binary data
@@ -37,8 +37,6 @@ def recognize_plate(filename):
         # Extract license plate information if available
         if 'results' in results:
             plate_info = results['results'][0]
-            plate = plate_info['plate']
-            confidence = plate_info['score']
             #return f'License plate: {plate} (confidence {confidence})'
             return plate
 
@@ -56,8 +54,6 @@ def send_email(to_email, subject, body, attachment):
     password = "password" # Defining the sender password
 
     msg = MIMEMultipart() # Creating a MIME object
-    msg['From'] = from_email # Adding the sender email to the message
-    msg['To'] = to_email # Adding the recipient email to the message
     msg['Subject'] = subject # Adding the subject of the email to the message
     msg.attach(MIMEText(body, 'plain')) # Adding the body of the email to the message
 
@@ -83,10 +79,6 @@ def send_email(to_email, subject, body, attachment):
         server.starttls()
         # Login to the email account
         server.login(from_email, password)
-
-        # Converting the message to a string
-        text = msg.as_string()
-
         # Sending the email
         server.sendmail(from_email, to_email, text)
         # Quitting the SMTP server
@@ -105,9 +97,6 @@ if __name__ == "__main__":
     # Get the number plate from the image
     numberPlate = recognize_plate(image)
     print(numberPlate)
-
-    # Load the sample database as a Pandas dataframe
-    df = pd.read_csv("sample_database.csv")
 
     # Search for number plate in database
     user_data = df[df["number_plate"] == numberPlate]
@@ -129,5 +118,3 @@ if __name__ == "__main__":
         # Send email to user
         subject = "Fine for Violation"
         body = f"Dear {user_name},\nYou have been fined for not wearing a helmet while riding. Please find the attached image as proof of violation."
-        attachment = image
-        send_email(email, subject, body, attachment)
