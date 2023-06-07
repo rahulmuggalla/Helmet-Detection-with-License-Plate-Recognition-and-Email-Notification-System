@@ -1,28 +1,12 @@
-{% extends 'upload_image.html' %}
-{% block content %}
-<br><br>
+
 <center>
     <h1>Traffic Violation Data</h1>
     <table class="table table-bordered" style="width: 97%; text-align: center; font-size: 20px;">
         <thead>
             <tr>
                 <th>Image</th>
-                <th>Number Plate</th>
-                <th>Send Email</th>
             </tr>
         </thead>
-        <tbody>
-            {% for i in data %}
-            <tr>
-                <td>
-                    <a href="{{ url_for('static', filename='No_Helmet_Img/' + i[0]) }}">
-                        <img src="{{ url_for('static', filename='No_Helmet_Img/' + i[0]) }}" alt="Image" style="width: 100px; height: 100px;">
-                    </a>
-                </td>
-                <td>{{ i[1] }}</td>
-                {% if i[1] == "No license plates found in image." or i[1] == "Number Plate Text Not Recognized" or i[1] == "Error: Unknown Error" %} 
-                    <td>Can't Send Email</td>
-                {% else %}
                     <td>
                         <a href="{{ url_for('send_mail', lp=i[1], filename=i[0]) }}">Send Email</a>
                     </td>
