@@ -77,8 +77,8 @@ def forgot_password():
         
         # If the email exists, send an email to the user with their user ID
         # Replace the placeholders with your email configuration details
-        sender_email = "rahulmuggalla02@gmail.com"
-        sender_password = "gxnlvbfnssorjgkt"
+        sender_email = "YOUR EMAIL"
+        sender_password = "EMAIL PASSWORD"
         subject = "Forgot Details ?"
         message = f'''Your User ID is : {pswd[0]} 
 Your Password is : {pswd[1]}'''
@@ -122,10 +122,6 @@ def upload_vid():
             path=os.path.dirname(os.path.abspath(__file__))
             video=request.files['upload_vid']
             video.save(os.path.join(path,'static/video/',video.filename))
-            save_bike(os.path.join(path,'static/video/',video.filename))
-            save_no_helmet(os.path.join(path,'static/Person_Bike'+video.filename))
-            data_pth= os.path.join(path,'static/No_Helmet')
-            filedata=os.listdir(data_pth)
             dict_data=[(i,recognize_plate(os.path.join(data_pth,i)),session.get('user')) for i in filedata]
             #print(dict_data)
             cursor = mydb.cursor()
@@ -157,14 +153,6 @@ def upload_img():
             for image in request.files.getlist('images[]'):
                 image.save(os.path.join(path,'static/img/',image.filename))
                 save_no_helmet_img(os.path.join(path,'static/img'+image.filename))
-            data_pth= os.path.join(path,'static/No_Helmet_Img')
-            filedata=os.listdir(data_pth)
-            #print(filedata)
-            dict_data=[(i,recognize_plate(os.path.join(data_pth,i)),session.get('user')) for i in filedata]
-            #print(dict_data)
-            cursor = mydb.cursor()
-            for i, j, k in dict_data:
-                cursor.execute('insert into info values(%s, %s, %s)',(i, j, k))
             #cursor.executemany('insert into info values(%s, %s, %s)', dict_data)
                 mydb.commit()
             cursor.execute('select * from info where added_by = %s', (session.get('user'),))
@@ -224,28 +212,6 @@ def delete(lp):
         return redirect(url_for('create_dataset', data=data))
     else:
         return redirect(url_for('login'))
-
-@app.route('/edit/<lp>', methods=['GET','POST'])
-def edit(lp):
-    if session.get('user'):
-        cursor = mydb.cursor(buffered=True)
-        cursor.execute('select * from plate_details where lp=%s',[lp])
-        data=cursor.fetchone()
-        if request.method=='POST':
-            number_plate = request.form['number_plate']
-            name = request.form['name']
-            email = request.form['email']
-            
-            cursor.execute('update plate_details set lp=%s,name=%s,email=%s where lp=%s',(number_plate,name,email,lp))
-            mydb.commit()
-            
-            flash('Details updated Successfully !')
-            
-        cursor.execute('SELECT * FROM plate_details')
-        data = cursor.fetchall()
-        return render_template('dataset.html', data=data)
-    else:
-        return redirect(url_for('login'))
     
 
         
@@ -257,7 +223,6 @@ def send_mail(lp,filename):
         else:
             cursor = mydb.cursor(buffered=True)
             
-            cursor.execute('select * from plate_details where lp=%s',[lp])
             data=cursor.fetchone()
             try:
                 
@@ -269,11 +234,6 @@ def send_mail(lp,filename):
                     name=data[1]
                     license_plate=data[0]
                     to_email=data[2]
-                    subject='Violation Alert: No Helmet'
-                    body=body = f'Dear {name},\n\nThis is to inform you that a violation has been detected in your vehicle with license plate number {license_plate}. The violation is related to not wearing a helmet while driving.\n\nPlease ensure compliance with traffic rules and regulations in the future.\n\nSincerely,\nTraffic Violation Monitoring System'
-                    attachment=os.path.join(path,'static/No_Helmet_Img',filename )
-                    send_email(to_email, subject, body, attachment)
-                    flash('Mail sent successfully')
                     return redirect(url_for('upload_img'))
             except Exception as e:
                 flash('No data found for this license plate')
@@ -282,6 +242,7 @@ def send_mail(lp,filename):
     else:
         return redirect(url_for('login'))
     return render_template('display_img.html')
+
 @app.route('/logout', methods=['GET','POST'])
 def logout():
     if session.get('user'):
@@ -290,36 +251,9 @@ def logout():
         cursor.execute('select image_name from info where added_by=%s',[session.get('user')])
         data=cursor.fetchall()
         path=os.path.dirname(os.path.abspath(__file__))
-        
-        for i in data:
-            if os.path.exists(os.path.join(os.path.join(path,'static/No_Helmet_Img',i[0]))):
-                os.remove(os.path.join(path,'static/No_Helmet_Img',i[0]))
-                cursor.execute('delete from info where image_name=%s',[i[0]])
-                mydb.commit()
                 
         cursor.execute('select image_name from info2 where added_by=%s',[session.get('user')])
         data1=cursor.fetchall()
-        
-        for i in data1:
-            if os.path.exists(os.path.join(os.path.join(path,'static/No_Helmet',i[0]))):
-                os.remove(os.path.join(path,'static/No_Helmet',i[0]))
-                cursor.execute('delete from info2 where image_name=%s',[i[0]])
-                mydb.commit()
-                
-        img_path=os.listdir(os.path.join(path,'static/img'))
-        for i in img_path:
-            if os.path.exists(os.path.join(os.path.join(path,'static/img',i))):
-                os.remove(os.path.join(path,'static/img',i))
-        
-        person_bike_path = os.listdir(os.path.join(path,'static/Person_Bike'))
-        for i in person_bike_path:
-            if os.path.exists(os.path.join(os.path.join(path,'static/Person_Bike',i))):
-                os.remove(os.path.join(path,'static/Person_Bike',i))
-                
-        video_path = os.listdir(os.path.join(path,'static/video'))
-        for i in video_path:
-            if os.path.exists(os.path.join(os.path.join(path,'static/video',i))):
-                os.remove(os.path.join(path,'static/video',i))
                 
         session.pop('user')
     return redirect(url_for('login'))
@@ -330,17 +264,11 @@ def delete_img():
     if request.method == 'POST':
         cursor=mydb.cursor(buffered=True)
         cursor.execute('SELECT image_name FROM info WHERE added_by = %s', [session.get('user')])
-        data = cursor.fetchall()
         path = os.path.dirname(os.path.abspath(__file__))
 
         for i in data:
             img_path = os.path.join(path, 'static/img', i[0])
-            no_helmet_img_path = os.path.join(path, 'static/No_Helmet_Img', i[0])
-            if os.path.exists(img_path):
-                os.remove(img_path)
-            if os.path.exists(no_helmet_img_path):
                 os.remove(no_helmet_img_path)
-            cursor.execute('DELETE FROM info WHERE image_name = %s', [i[0]])
             mydb.commit()
 
         flash('Files and records deleted successfully!', 'success')
@@ -354,7 +282,6 @@ def delete_img():
 def delete_vid():
     if request.method == 'POST':
         cursor=mydb.cursor(buffered=True)
-        cursor.execute('SELECT image_name FROM info2 WHERE added_by = %s', [session.get('user')])
         data1 = cursor.fetchall()
         
         path = os.path.dirname(os.path.abspath(__file__))
@@ -363,14 +290,7 @@ def delete_vid():
             img_path = os.path.join(path, 'static/video', i[0])
             no_helmet_img_path = os.path.join(path, 'static/No_Helmet', i[0])
             person_bike_path = os.path.join(path, 'static/Person_Bike', i[0])
-            if os.path.exists(img_path):
-                os.remove(img_path)
-            if os.path.exists(no_helmet_img_path):
-                os.remove(no_helmet_img_path)
-            if os.path.exists(person_bike_path):
-                os.remove(person_bike_path)
 
-            cursor.execute('DELETE FROM info2 WHERE image_name = %s', [i[0]])
             mydb.commit()
 
         flash('Files and records deleted successfully.', 'success')
