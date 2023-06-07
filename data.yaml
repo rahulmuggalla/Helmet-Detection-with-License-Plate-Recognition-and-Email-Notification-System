@@ -1,0 +1,6 @@
+train: /content/drive/MyDrive/Helmet Detection/Helmet Detection.v6i.yolov8/train
+val: /content/drive/MyDrive/Helmet Detection/Helmet Detection.v6i.yolov8/val
+
+
+nc: 4
+names: ['Helmet', 'No_Helmet', 'Number_Plate', 'Person_Bike']
