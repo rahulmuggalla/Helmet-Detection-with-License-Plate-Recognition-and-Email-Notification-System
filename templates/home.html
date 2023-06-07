@@ -15,13 +15,6 @@
             max-width: 1200px;
         }
 
-        .form-container {
-            background-color: #f8f9fa;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
         .table-container {
             background-color: #fff;
             padding: 20px;
@@ -43,11 +36,6 @@
 
         .description-text {
             flex: 0 0 60%;
-            padding-right: 20px;
-        }
-
-        .image-container {
-            flex: 0 0 40%;
         }
 
         .image {
@@ -60,13 +48,6 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="{{url_for('home')}}">Home</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -89,24 +70,6 @@
     </nav>
 
     <br>
-
-    <div class="container">
-        <div class="description-container">
-            <div class="description-text">
-                <h2>Helmet Detection with Number Plate Recognition and Email Notification System</h2>
-                <p>
-                    This project is a AI-based system that aims to improve road safety by detecting whether motorcyclists are wearing helmets and recognizing the license plates of vehicles in real-time.<br><br>
-
-This project focuses on developing a Helmet Detection with License Plate Recognition and Email Notification system using Python, YOLOv8, and OpenCV. The system has been designed to improve road safety by detecting whether motorcyclists are wearing helmets and recognizing license plates of vehicles. The system is capable of sending email notifications to the concerned authorities in real-time, providing an efficient mechanism for law enforcement.<br><br>
-
-To achieve these objectives, I have collected our own dataset of 3500 images, labelled them, and built the model using YOLOv8 for object detection. I have trained and optimized the model to accurately detect helmets and license plates in real-time. The system has been designed to work in various weather conditions and lighting conditions, providing robust and accurate results.<br><br>
-
-Furthermore, I have integrated email notification functionality into the system, allowing the authorities to receive real-time alerts when a violation occurs. The system is capable of sending notifications to multiple recipients, enabling the concerned authorities to take appropriate action promptly.<br><br>
-
-Our results demonstrate the effectiveness of the proposed system, with high accuracy and robustness in detecting helmets and license plates in various scenarios. The system has the potential to significantly improve road safety and law enforcement efforts. I believe that this system can be further enhanced by incorporating additional features and functionalities, such as facial recognition and vehicle identification.<br><br>
-
-In conclusion, this project represents a significant contribution to the field of computer vision and road safety. The developed system has the potential to be used by law enforcement agencies and other stakeholders to improve road safety and reduce accidents. I am confident that this project can be further extended and enhanced to address more complex and challenging real-world scenarios.
-                </p>
             </div>
             <div class="image-container">
                 <img class="image" src="static/sample.jpeg" alt="Helmet Detection Image">
