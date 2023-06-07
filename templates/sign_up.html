@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sign Up Form</title>
+  <style>
+    /* Center the sign-up form */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    
+    .signup-form {
+      max-width: 300px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f2f2f2;
+    }
+    
+    .signup-form h2 {
+      text-align: center;
+    }
+    
+    .signup-form input[type="text"],
+    .signup-form input[type="password"] {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    
+    .signup-form button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+    
+    .signup-form button:hover {
+      opacity: 0.8;
+    }
+    
+    .signup-form .options {
+      margin-top: 12px;
+      text-align: center;
+    }
+    
+    .signup-form .options a {
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-form">
+    <h2>Sign Up</h2>
+    <form action="/signup" method="post">
+      <label for="username">User ID:</label>
+      <input type="text" id="username" name="username" placeholder="Enter your user id" required>
+      
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="Enter your email" required>
+      
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      
+      <button type="submit">Sign Up</button>
+    </form>
+    
+    <div class="options">
+      <a href="{{url_for('login')}}">Login</a>
+    </div>
+  </div>
+</body>
+</html>

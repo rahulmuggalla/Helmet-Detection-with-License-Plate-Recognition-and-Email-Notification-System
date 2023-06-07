@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+        }
+
+        .form-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .table-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" target="_blank" href="{{ url_for('home') }}">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Upload
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" target="_blank" href="{{ url_for('upload_img') }}">Image</a>
+                            <a class="dropdown-item" target="_blank" href="{{ url_for('upload_vid') }}">Video</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" target="_blank" href="{{ url_for('create_dataset') }}">Database</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    <ul>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="form-container">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="text-center">
+                    <h1>Upload Image</h1>
+                    <br><br>
+                    <input name="images[]" type="file" multiple><br><br>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button id="deleteButton" type="button" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script>
+        function deleteFiles() {
+            if (confirm("Are you sure you want to delete the files?")) {
+                fetch("{{ url_for('delete_img') }}", {
+                    method: "POST"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+            }
+        }
+
+        document.getElementById("deleteButton").addEventListener("click", deleteFiles);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
