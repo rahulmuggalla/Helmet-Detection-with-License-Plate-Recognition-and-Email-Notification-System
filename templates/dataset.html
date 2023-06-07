@@ -10,19 +10,6 @@
         body {
             padding-top: 20px;
         }
-
-        .container {
-            max-width: 800px;
-        }
-
-        .form-container {
-            background-color: #f8f9fa;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-
-        .table-container {
             background-color: #fff;
             padding: 20px;
             border-radius: 5px;
@@ -66,19 +53,6 @@
         </div>
     </nav>
 
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-info">
-                    <ul>
-                        {% for message in messages %}
-                        <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        {% endwith %}
-
         <div class="form-container">
             <h1>Dataset</h1>
             <form method="POST">
@@ -99,16 +73,6 @@
         </div>
 
         <div class="table-container">
-            {% if data %}
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Number Plate</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Options</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {% for row in data %}
                             <tr>
@@ -121,12 +85,6 @@
                                 </td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No data available.</p>
-            {% endif %}
-        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
